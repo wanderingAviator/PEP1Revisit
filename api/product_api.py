@@ -1,4 +1,4 @@
-from my_mongo_connection import product
+from ..mongo_connection.my_mongo_connection import product
 from datetime import datetime
 
 #create product
