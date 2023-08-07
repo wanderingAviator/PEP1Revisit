@@ -1,0 +1,1 @@
+Any accounts created moving forward will have hashed passwords. Accounts existing before-hand will not work since the hashing implementation
