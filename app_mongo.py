@@ -53,7 +53,7 @@ class Product(Resource):
     
     def put(self, name):
         args = product_update_args.parse_args()
-        product_api.update_product(args)
+        product_api.update_product(name, args)
     
     def post(self, name):
         args = product_post_args.parse_args()
@@ -71,7 +71,7 @@ class User(Resource):
         return user_api.find_by_username(username)   
 
 
-print(product_api.find_by_name("Air Jordan")) 
+
 api.add_resource(Product, '/product/<name>')
 api.add_resource(User, '/user/<username>')
 
