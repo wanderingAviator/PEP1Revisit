@@ -1,5 +1,5 @@
 from flask import json
-from ..mongo_connection.my_mongo_connection import product
+from my_mongo_connection import product
 from datetime import datetime
 from bson import json_util
 

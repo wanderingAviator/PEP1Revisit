@@ -1,4 +1,4 @@
-from ..mongo_connection.my_mongo_connection import user
+from my_mongo_connection import user
 from datetime import datetime
 
 #create user
