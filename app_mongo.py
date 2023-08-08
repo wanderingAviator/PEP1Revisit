@@ -15,20 +15,9 @@ def landing_page():
 def dashboard():
     return render_template('dashboard.html')
 
-
-
-@app.route('/')
-def landing_page():
-    return render_template('landing.html')
-
-@app.route('/dashboard')
-def dashboard():
-    return render_template('dashboard.html')
-
 #PRODUCT
 
 #Request parsing set-up
-
 product_post_args = reqparse.RequestParser()
 product_post_args.add_argument("product_name", type=str, help="Name is required", required=True)
 product_post_args.add_argument("product_desc", type=str, help="Description is required", required=True)
@@ -46,7 +35,6 @@ product_update_args.add_argument("product_category", type=str)
 product_update_args.add_argument("product_brand", type=str)
 
 #endpoints
-
 @app.route('/product', methods=['POST'])
 def post_product(productObject):
     product_api.create_product(productObject)
