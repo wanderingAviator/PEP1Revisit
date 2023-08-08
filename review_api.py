@@ -1,4 +1,4 @@
-from ..mongo_connection.my_mongo_connection import review
+from my_mongo_connection import review
 from datetime import datetime
 
 #create review
