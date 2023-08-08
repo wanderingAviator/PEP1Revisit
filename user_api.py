@@ -35,7 +35,7 @@ def update_user(id, userObject):
 
 # find all
 def find_all():
-    return user.find({})
+    return parse_json(user.find({}))
 
 def find_by_username(username):
     return parse_json(user.find({"username": username}))
