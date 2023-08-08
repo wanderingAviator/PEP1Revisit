@@ -34,6 +34,14 @@ product_update_args.add_argument("product_price", type=str)
 product_update_args.add_argument("product_category", type=str)
 product_update_args.add_argument("product_brand", type=str)
 
+user_post_args = reqparse.RequestParser()
+user_post_args.add_argument("first_name", type = str, help="First name is required", required=True)
+user_post_args.add_argument("last_name", type = str, help="Last name is required", required=True)
+user_post_args.add_argument("username", type = str, help="Username is required", required=True)
+user_post_args.add_argument("address", type = str, help="Address is required", required=True)
+user_post_args.add_argument("email", type = str, help="E-mail is required", required=True)
+user_post_args.add_argument("hashed_password", type = str, help="Password is required", required=True)
+
 #endpoints
 @app.route('/product', methods=['POST'])
 def post_product(productObject):
@@ -50,10 +58,19 @@ class Product(Resource):
     def post(self, name):
         args = product_post_args.parse_args()
         product_api.create_product(args)
-    
+
+class User(Resource):
+    def post(self, username):
+         args = user_post_args.parse_args()
+         user_api.create_user(args) 
+
+    def get(self, username):
+        return user_api.find_by_username(username)   
+
 
 print(product_api.find_by_name("Air Jordan")) 
 api.add_resource(Product, '/product/<name>')
+api.add_resource(User, '/user/<username>')
 
 #USER
 
@@ -64,6 +81,8 @@ def query_all_custs():
 @app.route('/dashboard/customer/<int:id>/')
 def query_cust_by_number(id):
     return user_api.find_by_id(id)
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

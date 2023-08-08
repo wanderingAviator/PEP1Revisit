@@ -3,6 +3,9 @@ from datetime import datetime
 from flask import json
 from bson import json_util
 
+def parse_json(data):
+    return json.loads(json_util.dumps(data))
+
 #create user
 def create_user(userObject):
     user.insert_one({
@@ -34,10 +37,13 @@ def update_user(id, userObject):
 def find_all():
     return user.find({})
 
+def find_by_username(username):
+    return parse_json(user.find({"username": username}))
+
 def find_by_name(name):
     first_name, last_name = name.split()
-    return user.find({"first_name": first_name,
-                      "last_name": last_name})
+    return parse_json(user.find({"first_name": first_name,
+                      "last_name": last_name}))
 
 #find by id
 def find_by_id(id):
