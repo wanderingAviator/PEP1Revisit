@@ -62,6 +62,9 @@ class Product(Resource):
 
 
 class Review(Resource):
+    # def get_all(self):
+    #     return review_api.find_all(), 200
+    
     def get(self, review_id):
         # Convert the string item_id to ObjectId
         object_id = ObjectId(review_id)
@@ -71,14 +74,11 @@ class Review(Resource):
         else:
             return {"message": "Review not found"}, 404
     
-    # def get_all(self):
-    #     return review_api.find_all()
-    
     # def get_by_product(self, product_id):
-    #     return review_api.find_by_product(product_id)
+    #     return review_api.find_by_product(product_id), 200
     
     # def get_by_customer(self, customer_id):
-    #     return review_api.find_by_customer(customer_id)
+    #     return review_api.find_by_customer(customer_id), 200
     
     def put(self, review_id):
         args = review_parser.parse_args()
@@ -109,7 +109,7 @@ class Review(Resource):
     
 print(product_api.find_by_name("Air Jordan")) 
 api.add_resource(Product, '/product/<name>')
-api.add_resource(Review,'/review/<string:review_id>', '/review')
+api.add_resource(Review, '/review/<string:review_id>', '/reviews', '/review/customer/<int:customer_id>', '/review/product/<int:product_id>')
 
 #USER
 
