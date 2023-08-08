@@ -25,8 +25,8 @@ product_update_args.add_argument("product_category", type=str)
 product_update_args.add_argument("product_brand", type=str)
 
 review_parser = reqparse.RequestParser()
-review_parser.add_argument("customer_id", type=float, help="Customer id is required", required=True)
-review_parser.add_argument("product_id", type=float, help="Product id is required", required=True)
+review_parser.add_argument("customer_id", type=str, help="Customer id is required", required=True)
+review_parser.add_argument("product_id", type=str, help="Product id is required", required=True)
 review_parser.add_argument("rating", type=float, help="In Stock is required", required=True)
 review_parser.add_argument("comment", type=str, help="Comment is required", required=True)
 
@@ -42,19 +42,22 @@ user_post_args.add_argument("hashed_password", type = str, help="Password is req
 
 #PRODUCT
 class Product(Resource):
-    def get(self, name):
-        return product_api.find_by_name(name)
+    def get(self, id):
+        object_id = ObjectId(id)
+        return product_api.find_by_id(object_id)
     
-    def put(self, name):
+    def put(self, id):
+        object_id = ObjectId(id)
         args = product_update_args.parse_args()
-        product_api.update_product(name, args)
+        product_api.update_product(object_id, args)
     
-    def post(self, name):
+    def post(self, id):
         args = product_post_args.parse_args()
         product_api.create_product(args)
 
-    def delete(self, name):
-        product_api.delete_product(name)
+    def delete(self, id):
+        object_id = ObjectId(id)
+        product_api.delete_product(object_id)
 
 class ReturnAllProducts(Resource):
     def get(self):
@@ -70,7 +73,7 @@ class User(Resource):
         return user_api.find_by_username(username)  
 
 class ReturnAllUsers(Resource):
-    def get(self, product_id):
+    def get(self):
             return user_api.find_all()
 
 # REVIEW
@@ -116,11 +119,12 @@ class ProductReviewsResource(Resource):
     def get(self, product_id):
             return review_api.find_by_product(product_id), 200
     
-api.add_resource(Product, '/product/<name>')
+api.add_resource(Product, '/product/<id>')
 api.add_resource(ReturnAllProducts, '/product/all')
 api.add_resource(Review, '/review/<string:review_id>', '/review')
 api.add_resource(ProductReviewsResource, '/review/product/<int:product_id>')
 api.add_resource(User, '/user/<username>')
+api.add_resource(ReturnAllUsers, '/user/all/get')
 
 if __name__ == "__main__":
     app.run(debug=True)
