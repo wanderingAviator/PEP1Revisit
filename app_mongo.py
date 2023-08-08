@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 from flask_restful import Resource, Api
-from product_api import create_product, find_by_name, get_all_products
+from api.product_api import create_product, find_by_name
 
 app = Flask(__name__)
 api = Api(app)
