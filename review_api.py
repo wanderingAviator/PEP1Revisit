@@ -9,7 +9,7 @@ def parse_json(data):
 #create review
 def create_review(reviewObject):
     now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    review.insert_one({
+    return review.insert_one({
         "customer_id" : reviewObject["customer_id"],
         "product_id" : reviewObject["product_id"],
         "rating" : reviewObject["rating"],
@@ -25,14 +25,11 @@ def update_review(id, reviewObject):
     filter = {"_id": id}
     # defining what we want updated
     update = {"$set": {
-        "customer_id" : reviewObject["customer_id"],
-        "product_id" : reviewObject["product_id"],
         "rating" : reviewObject["rating"],
         "comment" : reviewObject["comment"],
-        "created_at": reviewObject["created_at"],
         "updated_at" : now
     }}
-    review.update_one(filter, update)
+    return review.update_one(filter, update)
 
 # find all
 def find_all():
@@ -48,8 +45,8 @@ def find_by_customer(customer_id):
 
 #find by id
 def find_by_id(id):
-    return review.find_one({"_id": id})
+    return parse_json(review.find_one({"_id": id}))
 
 #delete
 def delete_review(id):
-    review.delete_one({"_id":id})
+    return review.delete_one({"_id":id})
