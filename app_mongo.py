@@ -25,6 +25,8 @@ product_update_args.add_argument("product_category", type=str)
 product_update_args.add_argument("product_brand", type=str)
 
 review_parser = reqparse.RequestParser()
+review_parser.add_argument("customer_id", type=float, help="Customer id is required", required=True)
+review_parser.add_argument("product_id", type=float, help="Product id is required", required=True)
 review_parser.add_argument("rating", type=float, help="In Stock is required", required=True)
 review_parser.add_argument("comment", type=str, help="Comment is required", required=True)
 
@@ -49,6 +51,7 @@ class Product(Resource):
         args = product_post_args.parse_args()
         product_api.create_product(args)
 
+
 class User(Resource):
     def post(self, username):
          args = user_post_args.parse_args()
@@ -56,11 +59,14 @@ class User(Resource):
 
     def get(self, username):
         return user_api.find_by_username(username)  
-       
-class Review(Resource):
-    # def get_all(self):
-    #     return review_api.find_all(), 200
+
+
+class ProductReviewsResource(Resource):
+    def get(self, product_id):
+            return review_api.find_by_product(product_id), 200
+     
     
+class Review(Resource):
     def get(self, review_id):
         # Convert the string item_id to ObjectId
         object_id = ObjectId(review_id)
@@ -70,15 +76,11 @@ class Review(Resource):
         else:
             return {"message": "Review not found"}, 404
     
-    # def get_by_product(self, product_id):
-    #     return review_api.find_by_product(product_id), 200
-    
     # def get_by_customer(self, customer_id):
     #     return review_api.find_by_customer(customer_id), 200
 
     def put(self, review_id):
         args = review_parser.parse_args()
-        
         # Convert the string item_id to ObjectId
         object_id = ObjectId(review_id)
 
@@ -103,7 +105,8 @@ class Review(Resource):
             return {"message": "Review not found"}, 404
 
 api.add_resource(Product, '/product/<name>')
-api.add_resource(Review, '/review/<string:review_id>', '/reviews', '/review/customer/<int:customer_id>', '/review/product/<int:product_id>')
+api.add_resource(Review, '/review/<string:review_id>', '/review')
+api.add_resource(ProductReviewsResource, '/review/product/<int:product_id>')
 api.add_resource(User, '/user/<username>')
 
 if __name__ == "__main__":
