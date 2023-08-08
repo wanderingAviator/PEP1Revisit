@@ -1,5 +1,7 @@
 from my_mongo_connection import user
 from datetime import datetime
+from flask import json
+from bson import json_util
 
 #create user
 def create_user(userObject):
@@ -11,6 +13,7 @@ def create_user(userObject):
         "address" : userObject["address"],
         "hashed_password" : userObject["hashed_password"]
     })
+
 
 #update review
 def update_user(id, userObject):
