@@ -44,7 +44,7 @@ def find_by_name(name):
 
 #get all
 def get_all_products():
-    return product.find({})
+    return parse_json(product.find({}))
 
 #delete
 def delete_product(id):
