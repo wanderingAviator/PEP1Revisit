@@ -70,7 +70,7 @@ class User(Resource):
         return user_api.find_by_username(username)  
 
 class ReturnAllUsers(Resource):
-    def get(self, product_id):
+    def get(self):
             return user_api.find_all()
 
 # REVIEW
@@ -121,6 +121,7 @@ api.add_resource(ReturnAllProducts, '/product/all')
 api.add_resource(Review, '/review/<string:review_id>', '/review')
 api.add_resource(ProductReviewsResource, '/review/product/<int:product_id>')
 api.add_resource(User, '/user/<username>')
+api.add_resource(ReturnAllUsers, '/user/all')
 
 if __name__ == "__main__":
     app.run(debug=True)
