@@ -47,5 +47,5 @@ def get_all_products():
     return parse_json(product.find({}))
 
 #delete
-def delete_product(id):
-    product.delete_one({"_id" : id})
+def delete_product(name):
+    product.delete_one({"product_name" : name})

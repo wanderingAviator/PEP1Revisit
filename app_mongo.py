@@ -51,13 +51,16 @@ class Product(Resource):
     def get(self, name):
         return product_api.find_by_name(name)
     
-    def post(self, name):
-        args = product_post_args.parse_args()
-        product_api.create_product(args)
+    def put(self, name):
+        args = product_update_args.parse_args()
+        product_api.update_product(args)
     
     def post(self, name):
         args = product_post_args.parse_args()
         product_api.create_product(args)
+
+    def delete(self, name):
+        product_api.delete_product(name)
 
 class User(Resource):
     def post(self, username):
