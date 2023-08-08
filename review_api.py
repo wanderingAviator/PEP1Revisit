@@ -14,7 +14,8 @@ def create_review(reviewObject):
         "product_id" : reviewObject["product_id"],
         "rating" : reviewObject["rating"],
         "comment" : reviewObject["comment"],
-        "updated_at" : now
+        "created_at" : now,
+        "updated_at": now
     })
 
 #update review
@@ -28,6 +29,7 @@ def update_review(id, reviewObject):
         "product_id" : reviewObject["product_id"],
         "rating" : reviewObject["rating"],
         "comment" : reviewObject["comment"],
+        "created_at": reviewObject["created_at"],
         "updated_at" : now
     }}
     review.update_one(filter, update)
