@@ -1,5 +1,10 @@
+from flask import json
 from my_mongo_connection import review
 from datetime import datetime
+from bson import json_util
+
+def parse_json(data):
+    return json.loads(json_util.dumps(data))
 
 #create review
 def create_review(reviewObject):
@@ -29,15 +34,15 @@ def update_review(id, reviewObject):
 
 # find all
 def find_all():
-    return review.find({})
+    return parse_json(review.find({}))
 
 #find by product id
 def find_by_product(product_id):
-    return review.find({"product_id": product_id})
+    return parse_json(review.find({"product_id": product_id}))
 
 #find by customer id
 def find_by_customer(customer_id):
-    return review.find({"customer_id": customer_id})
+    return parse_json(review.find({"customer_id": customer_id}))
 
 #find by id
 def find_by_id(id):
