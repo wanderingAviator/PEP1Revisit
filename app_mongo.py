@@ -39,6 +39,8 @@ user_post_args.add_argument("email", type = str, help="E-mail is required", requ
 user_post_args.add_argument("hashed_password", type = str, help="Password is required", required=True)
 
 # Classes
+
+#PRODUCT
 class Product(Resource):
     def get(self, name):
         return product_api.find_by_name(name)
@@ -54,7 +56,7 @@ class Product(Resource):
     def delete(self, name):
         product_api.delete_product(name)
 
-
+#USER
 class User(Resource):
     def post(self, username):
          args = user_post_args.parse_args()
@@ -67,11 +69,7 @@ class ReturnAllUsers(Resource):
     def get(self, product_id):
             return user_api.find_all()
 
-class ProductReviewsResource(Resource):
-    def get(self, product_id):
-            return review_api.find_by_product(product_id), 200
-     
-    
+# REVIEW
 class Review(Resource):
     def get(self, review_id):
         # Convert the string item_id to ObjectId
@@ -109,7 +107,11 @@ class Review(Resource):
             return {"message": "Review deleted successfully"}, 200
         else:
             return {"message": "Review not found"}, 404
-
+        
+class ProductReviewsResource(Resource):
+    def get(self, product_id):
+            return review_api.find_by_product(product_id), 200
+    
 api.add_resource(Product, '/product/<name>')
 api.add_resource(Review, '/review/<string:review_id>', '/review')
 api.add_resource(ProductReviewsResource, '/review/product/<int:product_id>')
