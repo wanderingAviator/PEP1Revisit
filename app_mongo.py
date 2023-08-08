@@ -56,6 +56,10 @@ class Product(Resource):
     def delete(self, name):
         product_api.delete_product(name)
 
+class ReturnAllProducts(Resource):
+    def get(self):
+        return product_api.get_all_products()
+
 #USER
 class User(Resource):
     def post(self, username):
@@ -113,6 +117,7 @@ class ProductReviewsResource(Resource):
             return review_api.find_by_product(product_id), 200
     
 api.add_resource(Product, '/product/<name>')
+api.add_resource(ReturnAllProducts, '/product/all')
 api.add_resource(Review, '/review/<string:review_id>', '/review')
 api.add_resource(ProductReviewsResource, '/review/product/<int:product_id>')
 api.add_resource(User, '/user/<username>')
