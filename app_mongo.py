@@ -60,6 +60,9 @@ class User(Resource):
     def get(self, username):
         return user_api.find_by_username(username)  
 
+class ReturnAllUsers(Resource):
+    def get(self, product_id):
+            return user_api.find_all()
 
 class ProductReviewsResource(Resource):
     def get(self, product_id):
