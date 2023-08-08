@@ -20,9 +20,9 @@ def create_product(productObject):
     })
 
 #update product
-def update_product(name, productObject):
+def update_product(id, productObject):
     now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    filter = {"product_name" : name}
+    filter = {"_id" : id}
     update = {"$set": {
         "product_name" : productObject['product_name'],
         "product_desc" : productObject['product_desc'],
@@ -34,18 +34,14 @@ def update_product(name, productObject):
     }}
     product.update_one(filter, update)
 
-#find by id 
+#find by id
 def find_by_id(id):
-    return product.find_one({"_id" : id})
-
-#find by name
-def find_by_name(name):
-    return parse_json(product.find_one({"product_name" : name}))
+    return parse_json(product.find_one({"_id" : id}))
 
 #get all
 def get_all_products():
     return parse_json(product.find({}))
 
 #delete
-def delete_product(name):
-    product.delete_one({"product_name" : name})
+def delete_product(id):
+    product.delete_one({"_id" : id})
