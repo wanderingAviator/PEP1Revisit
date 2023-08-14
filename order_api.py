@@ -17,6 +17,7 @@ def create_order(order_object):
             total_price += product_doc["product_price"] * item["quantity"]
 
     order.insert_one({
+        "customer_id" : order_object["customer_id"],
         "products" : items,
         "total_price" : total_price,
         "order_date" : now,
@@ -27,9 +28,9 @@ def update_order(id, order_object):
     now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     filter = {"_id" : id}
     update = {"$set": {
-        "total_price" : order_object['total_price'],
+        "customer_id" : order_object["customer_id"],
         "products" : order_object['products'],
-        "order_date" : order_object['order_date']
+        "total_price" : order_object['total_price'],
     }}
     order.update_one(filter, update)
 
