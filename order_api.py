@@ -18,8 +18,8 @@ def create_order(order_object):
 
     order.insert_one({
         "products" : items,
+        "total_price" : total_price,
         "order_date" : now,
-        "total_price" : total_price
     })
 
 #update order/ More of admin use case
@@ -44,6 +44,11 @@ def get_all_orders():
 # get orders by customer id
 def get_by_customer(customer_id):
     return parse_json(order.find({"customer_id": customer_id}))
+
+def get_orders_sorted_by_date(customer_id):
+    pipeline = [{"$match": {"customer_id": customer_id}},
+                {"$sort": {"order_date": -1}}]
+    return parse_json(order.aggregate(pipeline))
 
 #delete / More of an admin functionality
 def delete_order(id):
