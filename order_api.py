@@ -1,7 +1,7 @@
 from flask import json
 from my_mongo_connection import order, product
 from datetime import datetime
-from bson import json_util
+from bson import json_util, ObjectId
 
 def parse_json(data):
     return json.loads(json_util.dumps(data))
@@ -11,12 +11,14 @@ def create_order(order_object):
     now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     total_price = 0
     items = order_object['products']
+    print("Order: ", order_object)
+    print('Products: ', items)
     for item in items:
-        product_doc = product.find_one({"_id": item["product_id"]})
+        product_doc = product.find_one({"_id": ObjectId(item["product_id"])})
         if product_doc:
             total_price += product_doc["product_price"] * item["quantity"]
 
-    order.insert_one({
+    return order.insert_one({
         "customer_id" : order_object["customer_id"],
         "products" : items,
         "total_price" : total_price,
@@ -31,6 +33,7 @@ def update_order(id, order_object):
         "customer_id" : order_object["customer_id"],
         "products" : order_object['products'],
         "total_price" : order_object['total_price'],
+        "updated_at" : now
     }}
     order.update_one(filter, update)
 
