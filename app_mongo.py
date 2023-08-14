@@ -12,7 +12,7 @@ product_post_args = reqparse.RequestParser()
 product_post_args.add_argument("product_name", type=str, help="Name is required", required=True)
 product_post_args.add_argument("product_desc", type=str, help="Description is required", required=True)
 product_post_args.add_argument("in_stock", type=bool, help="In Stock is required", required=True)
-product_post_args.add_argument("product_price", type=str, help="Price is required", required=True)
+product_post_args.add_argument("product_price", type=float, help="Price is required", required=True)
 product_post_args.add_argument("product_category", type=str, help="Category is required", required=True)
 product_post_args.add_argument("product_brand", type=str, help="Brand is required", required=True)
 
@@ -20,7 +20,7 @@ product_update_args = reqparse.RequestParser()
 product_update_args.add_argument("product_name", type=str)
 product_update_args.add_argument("product_desc", type=str)
 product_update_args.add_argument("in_stock", type=bool)
-product_update_args.add_argument("product_price", type=str)
+product_update_args.add_argument("product_price", type=float)
 product_update_args.add_argument("product_category", type=str)
 product_update_args.add_argument("product_brand", type=str)
 
@@ -54,11 +54,11 @@ user_update_args.add_argument("password")
 
 order_post_args = reqparse.RequestParser()
 order_post_args.add_argument("customer_id", type=str, help="Customer id is required", required=True)
-order_post_args.add_argument("products", type=list, help="Product ID list is required", required=True) #a list of product IDs
+order_post_args.add_argument("products", type=list, location="json", help="Products list is required", required=True) #a list of product IDs
 
 order_update_args = reqparse.RequestParser()
 order_update_args.add_argument("customer_id", type=str)
-order_update_args.add_argument("products", type='list')
+order_update_args.add_argument("products", type=list, location="json")
 order_update_args.add_argument("total_price", type=float)
 
 # Classes
@@ -190,8 +190,8 @@ class OrderByID(Resource): #Require ID
         args = order_update_args.parse_args()
         order_api.update_order(object_id, args)
 
-    def delete(self, id):
-        object_id = ObjectId(id)
+    def delete(self, order_id):
+        object_id = ObjectId(order_id)
         order_api.delete_order(object_id)
 
 class ReturnAllOrders(Resource): #don't require id
@@ -199,8 +199,10 @@ class ReturnAllOrders(Resource): #don't require id
         return order_api.get_all_orders()
     
     def post(self):
-         args = order_post_args.parse_args()
-         order_api.create_order(args) 
+        args = order_post_args.parse_args()
+        print(args)
+        result = order_api.create_order(args) 
+        return {"message": "Order created", "inserted_id": str(result.inserted_id)}, 201
 
 class OrderByCustomer(Resource): #extra search for fun
     def get(self, customer_id):
@@ -227,7 +229,7 @@ api.add_resource(ReviewByCustomer, '/review/customer/<customer_id>')
 api.add_resource(ReviewByProduct, '/review/product/<product_id>')
 
 api.add_resource(ReturnAllOrders, '/order')
-api.add_resource(OrderByID, '/order/id/<order_id>')
+api.add_resource(OrderByID, '/order/id/<string:order_id>')
 api.add_resource(OrderByCustomer, '/review/customer/<string:customer_id>')
 api.add_resource(OrderByCustomerAndDate, '/review/customer/<string:customer_id>/bydate')
 
