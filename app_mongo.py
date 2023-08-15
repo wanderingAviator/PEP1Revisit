@@ -115,12 +115,16 @@ class UserAuthentication(Resource): # authenticating the user by username and pa
 class UserByID(Resource):  #all require an ID to operate on
     @jwt_required()
     def get(self, id):
-        object_id = ObjectId(id)
-        user = user_api.find_by_id(object_id)  
-        if user:
-            return user, 200
+        current_user = get_jwt_identity()
+        if str(current_user["_id"]['$oid']) == id:
+            object_id = ObjectId(id)
+            user = user_api.find_by_id(object_id)  
+            if user:
+                return user, 200
+            else:
+                return {"message": "User not found"}, 404
         else:
-            return {"message": "User not found"}, 404
+            return {"message": "Unauthorized"}, 401
     
     def put(self, id):
         object_id = ObjectId(id)
