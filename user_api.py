@@ -14,7 +14,7 @@ def authenticate_login(credentials):
 
     user_in_db = user.find_one({'username': username}) # search for user in database
     if user_in_db and check_password_hash(user_in_db['password'], password):
-        access_token = create_access_token(identity=user_in_db['username'])
+        access_token = create_access_token(identity=parse_json(user_in_db))
         return {
             "message": "Login success!",
             "access_token": access_token
