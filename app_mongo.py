@@ -57,9 +57,7 @@ order_post_args.add_argument("customer_id", type=str, help="Customer id is requi
 order_post_args.add_argument("products", type=list, location="json", help="Products list is required", required=True) #a list of product IDs
 
 order_update_args = reqparse.RequestParser()
-order_update_args.add_argument("customer_id", type=str)
 order_update_args.add_argument("products", type=list, location="json")
-order_update_args.add_argument("total_price", type=float)
 
 # Classes
 
@@ -67,70 +65,108 @@ order_update_args.add_argument("total_price", type=float)
 class Product(Resource): #all require an ID to operate on
     def get(self, id):
         object_id = ObjectId(id)
-        return product_api.find_by_id(object_id)
+        product = product_api.find_by_id(object_id)
+        if product:
+            return product, 200
+        else:
+            return {"message": "Product not found"}, 404
     
     def put(self, id):
         object_id = ObjectId(id)
         args = product_update_args.parse_args()
-        product_api.update_product(object_id, args)
+        result = product_api.update_product(object_id, args)
+        if result.modified_count > 0:
+            return {"message": "Product updated successfully"}, 200
+        else:
+            return {"message": "Product not found"}, 404
 
     def delete(self, id):
         object_id = ObjectId(id)
-        product_api.delete_product(object_id)
+        result = product_api.delete_product(object_id)
+        if result.deleted_count > 0:
+            return {"message": "Product deleted successfully"}, 200
+        else:
+            return {"message": "Product not found"}, 404
 
 class ReturnAllProducts(Resource): #Don't require anything to operate on
     def get(self):
-        return product_api.get_all_products()
+        return product_api.get_all_products(), 200
     
     def post(self):
         args = product_post_args.parse_args()
-        product_api.create_product(args)
+        result = product_api.create_product(args)
+        return {"message": "Product created", "inserted_id": str(result.inserted_id)}, 201
 
 #USER
 class UserByID(Resource):  #all require an ID to operate on
     def get(self, id):
         object_id = ObjectId(id)
-        return user_api.find_by_id(object_id)  
+        user = user_api.find_by_id(object_id)  
+        if user:
+            return user, 200
+        else:
+            return {"message": "User not found"}, 404
     
     def put(self, id):
         object_id = ObjectId(id)
         args = user_update_args.parse_args()
-        user_api.update_user_by_id(object_id, args)
+        result = user_api.update_user_by_id(object_id, args)
+        if result.modified_count > 0:
+            return {"message": "User updated successfully"}, 200
+        else:
+            return {"message": "User not found"}, 404
 
     def delete(self, id):
         object_id = ObjectId(id)
-        user_api.delete_user_by_id(object_id)
+        result = user_api.delete_user_by_id(object_id)
+        if result.deleted_count > 0:
+            return {"message": "User deleted successfully"}, 200
+        else:
+            return {"message": "User not found"}, 404
 
 class UserByUsername(Resource):  #all require a username to operate on
     def get(self, username):
-        return user_api.find_by_username(username)  
+        user = user_api.find_by_username(username)  
+        if user:
+            return user, 200
+        else:
+            return {"message": "User with username '" + username + "' not found"}, 404
     
     def put(self, username):
         args = user_update_args.parse_args()
-        user_api.update_user_by_username(username, args)
+        result = user_api.update_user_by_username(username, args)
+        if result.modified_count > 0:
+            return {"message": "User with username '" + username + "' updated successfully"}, 200
+        else:
+            return {"message": "User not found"}, 404
 
     def delete(self, username):
-        user_api.delete_user_by_username(username)
+        result = user_api.delete_user_by_username(username)
+        if result.deleted_count > 0:
+            return {"message": "User with username '" + username + "' deleted successfully"}, 200
+        else:
+            return {"message": "User not found"}, 404
 
 class ReturnAllUsers(Resource): #Don't require anything to operate on
     def get(self):
-            return user_api.find_all()
+            return user_api.find_all(), 200
     
     def post(self):
-         args = user_post_args.parse_args()
-         user_api.create_user(args) 
+        args = user_post_args.parse_args()
+        result = user_api.create_user(args) 
+        return {"message": "User created", "inserted_id": str(result.inserted_id)}, 201
 
 class UserByFullName(Resource): #some searches by name, for fun
     def get(self, name):
-         return user_api.find_by_full_name(name)
+         return user_api.find_by_full_name(name), 200
     
 class UserByFirstName(Resource):
     def get(self, fname):
-         return user_api.find_by_first_name(fname)
+         return user_api.find_by_first_name(fname), 200
     
 class UserByLastName(Resource):
     def get(self, lname):
-         return user_api.find_by_last_name(lname)
+         return user_api.find_by_last_name(lname), 200
 
 # REVIEW
 class ReviewByID(Resource): #all require an ID to operate on
@@ -183,40 +219,52 @@ class ReviewByProduct(Resource): #some extra searches, for fun
 class OrderByID(Resource): #Require ID
     def get(self, order_id):
         object_id = ObjectId(order_id)
-        return order_api.find_by_id(object_id)  
+        order = order_api.find_by_id(object_id)  
+        if order:
+            return order, 200
+        else:
+            return {"message": "Order not found"}, 404
+
     
     def put(self, order_id):
         object_id = ObjectId(order_id)
         args = order_update_args.parse_args()
-        order_api.update_order(object_id, args)
+        result = order_api.update_order(object_id, args)
+        if result.modified_count > 0:
+            return {"message": "Order updated successfully"}, 200
+        else:
+            return {"message": "Order not found"}, 404
 
     def delete(self, order_id):
         object_id = ObjectId(order_id)
-        order_api.delete_order(object_id)
+        result = order_api.delete_order(object_id)
+        if result.deleted_count > 0:
+            return {"message": "Order deleted successfully"}, 200
+        else:
+            return {"message": "Order not found"}, 404
 
 class ReturnAllOrders(Resource): #don't require id
     def get(self):
-        return order_api.get_all_orders()
+        return order_api.get_all_orders(), 200
     
     def post(self):
         args = order_post_args.parse_args()
-        print(args)
         result = order_api.create_order(args) 
         return {"message": "Order created", "inserted_id": str(result.inserted_id)}, 201
 
 class OrderByCustomer(Resource): #extra search for fun
     def get(self, customer_id):
-        return order_api.get_by_customer(customer_id)
+        return order_api.get_by_customer(customer_id), 200
     
 class OrderByCustomerAndDate(Resource): #extra search for fun, plus a means to sort by date
     def get(self, customer_id):
-        return order_api.get_orders_sorted_by_date(customer_id)
+        return order_api.get_orders_sorted_by_date(customer_id), 200
 
    
-api.add_resource(Product, '/product/<id>')
+api.add_resource(Product, '/product/<string:id>')
 api.add_resource(ReturnAllProducts, '/product')
 
-api.add_resource(UserByID, '/user/id/<id>')
+api.add_resource(UserByID, '/user/id/<string:id>')
 api.add_resource(UserByUsername, '/user/username/<username>')
 api.add_resource(ReturnAllUsers, '/user')
 api.add_resource(UserByFullName, '/user/<name>')
@@ -225,13 +273,13 @@ api.add_resource(UserByLastName, '/user/l/<lname>')
 
 api.add_resource(ReturnAllReviews, '/review')
 api.add_resource(ReviewByID, '/review/id/<string:review_id>')
-api.add_resource(ReviewByCustomer, '/review/customer/<customer_id>')
-api.add_resource(ReviewByProduct, '/review/product/<product_id>')
+api.add_resource(ReviewByCustomer, '/review/customer/<string:customer_id>')
+api.add_resource(ReviewByProduct, '/review/product/<string:product_id>')
 
 api.add_resource(ReturnAllOrders, '/order')
 api.add_resource(OrderByID, '/order/id/<string:order_id>')
-api.add_resource(OrderByCustomer, '/review/customer/<string:customer_id>')
-api.add_resource(OrderByCustomerAndDate, '/review/customer/<string:customer_id>/bydate')
+api.add_resource(OrderByCustomer, '/order/customer/<string:customer_id>')
+api.add_resource(OrderByCustomerAndDate, '/order/customer/<string:customer_id>/bydate')
 
 if __name__ == "__main__":
     app.run(debug=True)
