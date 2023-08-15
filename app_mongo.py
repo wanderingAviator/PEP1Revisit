@@ -1,11 +1,15 @@
-from datetime import datetime
+import datetime
 from flask import Flask
 from flask_restful import Resource, Api, reqparse
+from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity
 import product_api, user_api, review_api, order_api
 from bson import ObjectId
 
 app = Flask(__name__)
+app.config['JWT_SECRET_KEY'] = 'Barcelona'
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=1)  
 api = Api(app)
+jwt = JWTManager(app)
 
 #Request parsing set-up
 product_post_args = reqparse.RequestParser()
@@ -43,6 +47,10 @@ user_post_args.add_argument("username", type = str, help="Username is required",
 user_post_args.add_argument("address", type = str, help="Address is required", required=True)
 user_post_args.add_argument("email", type = str, help="E-mail is required", required=True)
 user_post_args.add_argument("password", type = str, help="Password is required", required=True)
+
+user_authentication = reqparse.RequestParser()
+user_authentication.add_argument("username", type=str, help="Username is required", required=True)
+user_authentication.add_argument("password", type=str, help="Password is required", required=True)
 
 user_update_args = reqparse.RequestParser()
 user_update_args.add_argument("first_name", type = str)
@@ -98,7 +106,14 @@ class ReturnAllProducts(Resource): #Don't require anything to operate on
         return {"message": "Product created", "inserted_id": str(result.inserted_id)}, 201
 
 #USER
+class UserAuthentication(Resource): # authenticating the user by username and password
+    def post(self):
+        args = user_authentication.parse_args()
+        return user_api.authenticate_login(args)
+
+
 class UserByID(Resource):  #all require an ID to operate on
+    @jwt_required()
     def get(self, id):
         object_id = ObjectId(id)
         user = user_api.find_by_id(object_id)  
@@ -264,6 +279,7 @@ class OrderByCustomerAndDate(Resource): #extra search for fun, plus a means to s
 api.add_resource(Product, '/product/<string:id>')
 api.add_resource(ReturnAllProducts, '/product')
 
+api.add_resource(UserAuthentication, '/login')
 api.add_resource(UserByID, '/user/id/<string:id>')
 api.add_resource(UserByUsername, '/user/username/<username>')
 api.add_resource(ReturnAllUsers, '/user')
