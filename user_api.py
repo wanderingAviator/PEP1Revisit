@@ -8,7 +8,7 @@ def parse_json(data):
 
 #create user
 def create_user(userObject):
-    user.insert_one({
+    return user.insert_one({
         "first_name" : userObject["first_name"],
         "last_name" : userObject["last_name"],
         "username" : userObject["username"],
@@ -30,7 +30,7 @@ def update_user_by_id(id, userObject):
         "address" : userObject["address"],
         "password" : userObject["password"]
     }}
-    user.update_one(filter, update)
+    return user.update_one(filter, update)
 
 def update_user_by_username(username, userObject):
     # Defining the filter
@@ -44,7 +44,7 @@ def update_user_by_username(username, userObject):
         "address" : userObject["address"],
         "password" : userObject["password"]
     }}
-    user.update_one(filter, update)
+    return user.update_one(filter, update)
 
 # find
 def find_all():
@@ -69,7 +69,7 @@ def find_by_id(id):
 
 #delete
 def delete_user_by_id(id):
-    user.delete_one({"_id":id})
+    return user.delete_one({"_id":id})
 
 def delete_user_by_username(username):
-    user.delete_one({"username": username})
+    return user.delete_one({"username": username})

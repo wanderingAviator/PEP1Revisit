@@ -9,7 +9,7 @@ def parse_json(data):
 #create product
 def create_product(productObject):
     now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    product.insert_one({
+    return product.insert_one({
         "product_name" : productObject['product_name'],
         "product_desc" : productObject['product_desc'],
         "in_stock" : productObject['in_stock'],
@@ -32,7 +32,7 @@ def update_product(id, productObject):
         "product_brand" : productObject['product_brand'],
         "updated_at" : now
     }}
-    product.update_one(filter, update)
+    return product.update_one(filter, update)
 
 #find by id
 def find_by_id(id):
@@ -44,4 +44,4 @@ def get_all_products():
 
 #delete
 def delete_product(id):
-    product.delete_one({"_id" : id})
+    return product.delete_one({"_id" : id})
