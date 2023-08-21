@@ -11,8 +11,8 @@ def calculate_price(items):
     for item in items:
         product_doc = product.find_one({"_id": ObjectId(item["product_id"])})
         if product_doc:
-            total_price += product_doc["product_price"] * item["quantity"]
-    return total_price
+            total_price += float(product_doc["product_price"]) * int(item["quantity"])
+    return round(total_price, 2)
 
 #create order
 def create_order(order_object):
