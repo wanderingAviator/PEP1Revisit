@@ -47,6 +47,40 @@ def find_by_customer(customer_id):
 def find_by_id(id):
     return parse_json(review.find_one({"_id": id}))
 
+# sort by rating
+def sort_by_popularity():
+    pipeline = [
+        {
+            '$sort': {'rating': -1 }
+        }
+    ]
+    return parse_json(review.aggregate(pipeline))
+
+# sort by popularity with the product id
+def sort_by_popularity_with_product(product_id):
+    pipeline = [
+        {
+            '$match': {'product_id': product_id}
+        }, 
+        {
+            '$sort': {'rating': -1 }
+        }
+    ]
+    return parse_json(review.aggregate(pipeline))
+
+#calculate the average rating for a specific product
+def calculate_avg_rating(product_id):
+    pipeline = [
+        {
+            '$match': {'product_id': product_id}
+        },
+        {
+            '$group': {'_id': '$product_id', 'average_rating': {'$avg': '$rating'}}
+        }
+    ]
+
+    return parse_json(review.aggregate(pipeline))
+
 #delete
 def delete_review(id):
     return review.delete_one({"_id":id})
