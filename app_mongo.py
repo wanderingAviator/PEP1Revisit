@@ -2,12 +2,14 @@ import datetime
 from flask import Flask
 from flask_restful import Resource, Api, reqparse
 from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity
+from flask_cors import CORS
 import product_api, user_api, review_api, order_api
 from bson import ObjectId
 
 app = Flask(__name__)
+CORS(app)  # Allow all origins
 app.config['JWT_SECRET_KEY'] = 'Barcelona'
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=1)  
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(hours=1)  
 api = Api(app)
 jwt = JWTManager(app)
 
@@ -107,6 +109,13 @@ class ReturnAllProducts(Resource): #Don't require anything to operate on
 
 #USER
 class UserAuthentication(Resource): # authenticating the user by username and password
+    @jwt_required()
+    def get(self):
+        current_user = get_jwt_identity()
+        if current_user:
+            return current_user, 200
+        return {"message": "Unauthorized"}, 401
+
     def post(self):
         args = user_authentication.parse_args()
         return user_api.authenticate_login(args)
@@ -283,7 +292,7 @@ class OrderByCustomerAndDate(Resource): #extra search for fun, plus a means to s
 api.add_resource(Product, '/product/<string:id>')
 api.add_resource(ReturnAllProducts, '/product')
 
-api.add_resource(UserAuthentication, '/login')
+api.add_resource(UserAuthentication, '/login', '/profile')
 api.add_resource(UserByID, '/user/id/<string:id>')
 api.add_resource(UserByUsername, '/user/username/<username>')
 api.add_resource(ReturnAllUsers, '/user')
