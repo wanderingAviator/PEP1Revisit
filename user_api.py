@@ -17,6 +17,7 @@ def authenticate_login(credentials):
         access_token = create_access_token(identity=parse_json(user_in_db))
         return {
             "message": "Login success!",
+            "username": user_in_db['username'],
             "access_token": access_token
             }, 200
     else:
