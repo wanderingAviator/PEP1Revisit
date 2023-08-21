@@ -243,6 +243,18 @@ class ReviewByProduct(Resource): #some extra searches, for fun
     def get(self, product_id):
         return review_api.find_by_product(product_id), 200
 
+class SortReviewByPopularity(Resource):
+    def get(self):
+        return review_api.sort_by_popularity(), 200
+    
+class SortReviewByPopularityProduct(Resource):
+    def get(self, product_id):
+        return review_api.sort_by_popularity_with_product(product_id), 200
+    
+class CalculateAvgRatingProduct(Resource):
+    def get(self, product_id):
+        return review_api.calculate_avg_rating(product_id), 200
+
 #ORDER
 class OrderByID(Resource): #Require ID
     def get(self, order_id):
@@ -304,6 +316,9 @@ api.add_resource(ReturnAllReviews, '/review')
 api.add_resource(ReviewByID, '/review/id/<string:review_id>')
 api.add_resource(ReviewByCustomer, '/review/customer/<string:customer_id>')
 api.add_resource(ReviewByProduct, '/review/product/<string:product_id>')
+api.add_resource(SortReviewByPopularity, '/review/sort')
+api.add_resource(SortReviewByPopularityProduct, '/review/product/sort/<string:product_id>')
+api.add_resource(CalculateAvgRatingProduct, '/review/product/avgrating/<string:product_id>')
 
 api.add_resource(ReturnAllOrders, '/order')
 api.add_resource(OrderByID, '/order/id/<string:order_id>')
